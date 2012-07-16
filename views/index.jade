@@ -20,19 +20,19 @@ script
   });
   socket.on('set id', function(serid){
     id=serid;
-    document.getElementById('id').innerText='Current ID is '+id;
+    document.getElementById('id').innerHTML='Current ID is '+id;
   });
   socket.on('link', function(){
-    connection.innerText="Connected";
+    connection.innerHTML="Connected";
     connection.style.color='green';
     document.getElementById('qrcode').src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
   });
   socket.on('command', function(event){
     console.log(event);
-    document.getElementById('responce').innerText=event.message;
+    document.getElementById('responce').innerHTML=event.message;
   });
   socket.on('over', function(){
-    connection.innerText="Closed";
+    connection.innerHTML="Closed";
     connection.style.color='red';
-    document.getElementById('content').innerText="";
+    document.getElementById('content').innerHTML="";
   });

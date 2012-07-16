@@ -5,11 +5,16 @@ p(id='status') Disconnected
 div(id='content')
   img(id='qrcode')
   div(id='responce')
+  button(onclick='send()') send
+  input(id='message');
 script(src="/socket.io/socket.io.js")
 script
   var connection = document.getElementById('status');
   var id=null;
   var socket=io.connect('/server');
+  function send(){
+    socket.emit('command', {message:message.value});
+  }
   socket.on('qrcode',function(uri){
   document.getElementById('qrcode').src=uri;
   });
