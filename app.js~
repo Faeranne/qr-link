@@ -45,12 +45,12 @@ var server = io
     var id = randomstring.generate();
     servers[id]={server:socket}
     socket.emit('set id', id);
-    var url = "http://localhost:3000/code/"+id;
+    var url = "http://qr-link-test.jit.su/code/"+id;
     QRCode.toDataURL(url, function(err,uri){
     socket.emit('qrcode', uri);
     });
-    socket.on('return',function(event){
-      servers[id].client.emit('return',event);
+    socket.on('command',function(event){
+      servers[id].client.emit('command',event);
     });
     socket.on('disconnect', function(){
       if(servers[id].client!=null){

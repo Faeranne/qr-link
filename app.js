@@ -45,7 +45,7 @@ var server = io
     var id = randomstring.generate();
     servers[id]={server:socket}
     socket.emit('set id', id);
-    var url = "http://localhost:3000/code/"+id;
+    var url = "http://projectmakeit.com:2000/code/"+id;
     QRCode.toDataURL(url, function(err,uri){
     socket.emit('qrcode', uri);
     });
