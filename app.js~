@@ -45,11 +45,18 @@ var server = io
     var id = randomstring.generate();
     servers[id]={server:socket}
     socket.emit('set id', id);
-    QRCode.toDataURL(id, function(err,uri){
+    var url = "http://localhost:3000/code/"+id;
+    QRCode.toDataURL(url, function(err,uri){
     socket.emit('qrcode', uri);
     });
     socket.on('return',function(event){
-      servers[num].client.emit('return',event);
+      servers[id].client.emit('return',event);
+    });
+    socket.on('disconnect', function(){
+      if(servers[id].client!=null){
+        servers[id].client.emit('over');
+      }
+      servers[id]=null;
     });
   });
 var client = io
@@ -57,16 +64,28 @@ var client = io
   .on('connection', function(socket){
     var id = null;
     var con = null;
-    var serve = null;
     socket.on('link', function(event){
       console.log(event);
       id = event;
-        serve = servers[id].server;
-        server[id].client = socket;
+      if(servers[id]==null){
+        socket.emit('lost');
+      }else if(servers[id].locked){
+        socket.emit('locked');
+      }else{
+        socket.emit('link');
+        servers[id].client = socket;
+        servers[id].locked=true;
+        servers[id].server.emit('link');
+      }
     });
     socket.on('command', function(event){
-      serve.emit('command',event);
+      servers[id].server.emit('command',event);
       console.log(event);
+    });
+    socket.on('disconnect', function(){
+      if(servers[id]!=null){
+        servers[id].server.emit('over');
+      }
     });
   });
       

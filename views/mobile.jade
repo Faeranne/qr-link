@@ -1,10 +1,39 @@
-p #{qrcode}
-button(onclick="socket.emit('command', {temp:'text'+id});") hello
+p This page's ID is #{qrcode}
+p Page is currently 
+p(id='status') Disconnected
+div(id='content')
+  div(id='responce')
+  button(onclick='send()') send
+  input(id='message');
 script(src="/socket.io/socket.io.js")
 script
+  var connection = document.getElementById('status');
   var id='#{qrcode}';
-  var socket=io.connect('http://192.168.44.245:3000/client');
+  var socket=io.connect('/client');
   socket.emit('link', id);
-  function test(){
-    socket.emit('command', {temp:'text'+id});
+  var message = document.getElementById('message');
+  function send(){
+    socket.emit('command', {message:message.value});
   }
+  socket.on('link', function(){
+    connection.innerText="Connected";
+    connection.style.color='green';
+  });
+  socket.on('over', function(){
+    connection.innerText="Closed";
+    connection.style.color='red';
+    document.getElementById('content').innerText="";
+  }); 
+  socket.on('lost', function(){
+    connection.innerText="Failed";
+    connection.style.color='red';
+    document.getElementById('content').innerText="This code does not exist.";
+  });
+  socket.on('locked', function(){
+    connection.innerText="red";
+    document.getElementById('content').innerText="This code has already been used.";
+  });
+  socket.on('command', function(event){
+    console.log(event);
+    document.getElementById('responce').innerText=event.message;
+  });
