@@ -1,0 +1,16 @@
+h1= title
+p Welcome to #{title}
+img(id='qrcode')
+script(src="/socket.io/socket.io.js")
+script
+  var id=null;
+  var socket=io.connect('/server');
+  socket.on('qrcode',function(uri){
+  document.getElementById('qrcode').src=uri;
+  });
+  socket.on('set id', function(serid){
+    id=serid;
+  });
+  socket.on('command', function(event){
+    console.log(event);
+  });

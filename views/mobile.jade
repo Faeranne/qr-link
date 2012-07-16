@@ -1,0 +1,10 @@
+p #{qrcode}
+button(onclick="socket.emit('command', {temp:'text'+id});") hello
+script(src="/socket.io/socket.io.js")
+script
+  var id='#{qrcode}';
+  var socket=io.connect('http://192.168.44.245:3000/client');
+  socket.emit('link', id);
+  function test(){
+    socket.emit('command', {temp:'text'+id});
+  }
